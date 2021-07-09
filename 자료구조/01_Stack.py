@@ -55,7 +55,6 @@
 
 # 계산기 프로그램
 from tkinter import Tk, Label, Button, Entry, StringVar
-from functools import partial
 
 class Stack:
     def __init__(self):

@@ -25,13 +25,20 @@ class SinglyLinkedList: # 한방향 연결 리스트 정의
     def __len__(self):
         return self.size
     
-    def pushFront(self, key, value=None):
+    def printList(self):
+        v = self.head
+        while v:
+            print(v.key, "->", end=" ")
+            v = v.next
+        print("None")
+    
+    def pushFront(self, key, value):
         new_node = Node(key, value)
         new_node.next = self.head
         self.head = new_node
         self.size += 1
     
-    def pushBack(self, key, value=None):
+    def pushBack(self, key, value):
         new_node = Node(key, value)
         if self.size == 0:      # empty list
             self.head = new_node # new_node가 head가 됨
@@ -47,11 +54,11 @@ class SinglyLinkedList: # 한방향 연결 리스트 정의
             return None
         else:
             x = self.head
-            key = x.key # value = x.value
+            key = x.key
             self.head = x.next
             self.size = self.size - 1
             del x
-            return key # or return (key, value)
+            return key
     
     def popBack(self):
         if self.size == 0: # empty list
@@ -68,32 +75,37 @@ class SinglyLinkedList: # 한방향 연결 리스트 정의
             key = tail.key
             del tail
             self.size -= 1
-            return key # or return (key, value)
+            return key
     
     def search(self, key):
         v = self.head
-        while v != None:
+        while v:
             if v.key == key:
                 return v
             v = v.next
-        return v
+        return None
     
-    def remove(self, v): # 직접 작성해보기
-        if self.size == 0:
-            return None
-        elif v == self.head.key:
-            x = self.head
-            self.head = x.next
+    def remove(self, x):
+        if self.size == 0 or x == None:
+            return False
+        elif x == self.head:
+            v = self.head
+            self.head = self.head.next
             self.size -= 1
-            del x
+            del v
+            return True
         else:
             prev, target = None, self.head
-            while target.key != v:
+            while target and target != x:
                 prev = target
                 target = target.next
             prev.next = target.next
             self.size -= 1
             del target
+            return True
+    
+    def size(self):
+        return self.size
 
 # [연산의 시간복잡도]
 # 대상이 되는 노드가 head 노드로부터 k번째 떨어진 노드라고 가정
