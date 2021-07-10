@@ -137,7 +137,7 @@ class SinglyLinkedList: # 한방향 연결 리스트 정의
         
         c = b.next
         b.next = a
-        SinglyLinkedList.reverse2(self, b, c)
+        self.reverse2(self, b, c)
 
 # Running technique:
 # 한방향 연결 리스트에서 tail 노드와 prev 노드를 찾는 방법에 쓰인 기법으로
