@@ -106,10 +106,6 @@
                     break
             H[i] = H[j]
             i = j
-
-    2. chaining (다음에)
-
-
 """
 class HashOpenAddr:
     def __init__(self, size=10):
@@ -205,3 +201,64 @@ while True:
         break
     else:
         print("* not allowed command. enter a proper command!")
+
+"""
+    [quadratic probing]
+    비어있는 슬롯을 발견할 때까지 한 칸씩 내려가는게 아니라
+    k -> k + 1^2 -> k + 2^2 -> k + 3^2 -> ...
+    linear probing에 비해 클러스터 사이즈가 더 느리게 증가함
+    remove 함수가 조금 더 복잡해짐
+
+    [double hashing]
+    해시 함수가 두 개(f, g)
+    f(key)가 차있다면, f(key) + g(key)를 확인
+    거기에도 차있다면, f(key) + 2g(key)를 확인
+    거기에도 차있다면, f(key) + 3g(key)를 확인
+    linear probing에 비해 좋긴 하지만,
+    해시 함수를 두 개 만들어야 하고, 동작 또한 두 번 해야한다는 단점
+    그렇지만 큰 문제없이 잘 돌아간다.
+
+    이 세 가지 Open addressing 방법이 주로 쓰인다.
+
+    [성능 분석]
+    set, remove, search: cluster size에 영향을 받는데, 
+    cluster size: hash function, collision resolution method에 영향을 받는다.
+    m = |H| = slot 개수
+    n = H에 저장된 item 개수
+    n/m: load factor(부하율)
+
+    0 <= n/m < 1
+    n/m = 1이면 꽉찬 것
+
+    load factor가 증가하면 set, remove, search 함수의 수행 시간도 증가한다.
+    (collision 횟수) / n = 충돌 비율
+    이 충돌 비율을 통해서, hash function의 효율성을 체크할 수 있다.
+
+    평균적으로, m >= 2n (최소 50%는 비어있는 슬롯)을 유지할 수 있다면, (2배 큰 곳으로 이사)
+    (사실 30%, 70%여도 상관은 없다.)
+    cluster 평균 사이즈 = O(1)이 될 수 있다.
+    즉, set, remove, search 함수의 수행시간이 O(1)이 된다.
+    굉장히 빠르기 때문에, 많이 쓰인다.
+
+    다른 방식으로 collision을 회피하는 방법에는 Chaining이 있다.
+
+    2. Chaining
+    하나의 슬롯에 하나만 저장하지말고, 여러개를 저장하자.
+    한 슬롯에 한 방향 연결 리스트의 형식으로 아이템을 저장한다.
+    (양 방향 연결 리스트도 상관없다.)
+
+    set(key) -> pushfront(key) = O(1)
+    search(key) -> search(key) = O(충돌key의 평균 개수) = O(len(linkedlist)) = O(1)
+    remove(key) -> deleteNone(key) -> search(key) = O(1)
+    단, search 함수의 시간복잡도가 O(1)이 나오기 위해서는,
+    hash function을 잘 만들어야 된다. (C-Universal)
+
+    C-Universal h.f:
+    Pr(f(x) == f(y)) = c/m (c = 상수)
+
+    최종적으로 정리하면,
+    C-Universal h.f를 사용하고,
+    빈 슬롯이 50% 이상이도록 유지해야지만,
+    Open addressing이던, Chaining이던,
+    set, remove, search 함수의 연산 시간이 O(1)이 될 수 있다.
+"""
