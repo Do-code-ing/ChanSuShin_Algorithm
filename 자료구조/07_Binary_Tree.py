@@ -168,9 +168,9 @@ class Tree:
     Delete by copying:
         - 노드 x를 제거한다고 하면, x의 왼쪽 서브 트리 L과 오른쪽 서브 트리 R을 아래와 같이 조정한다.
             1. L에서 가장 큰 값을 갖는 노드 y를 찾는다.
-            2. y의 key 값을 x의 key 값으로 카피한다.
-            3. y의 왼쪽 서브 트리가 존재한다면, y의 위치로 올린다.
-            (y가 제일 큰 값이므로, y는 오른쪽 자식 노드가 없다. 고로, 왼쪽 자식 노드만 y의 위치로 올리면 된다.)
+            2. m의 key 값을 x의 key 값으로 카피한다.
+            3. m의 왼쪽 서브 트리가 존재한다면, m의 위치로 올린다.
+            (m이 제일 큰 값이므로, m은 오른쪽 자식 노드가 없다. 고로, 왼쪽 자식 노드만 m의 위치로 올리면 된다.)
     """
     def deleteByCopying(self, x):
         x_ = self.find_loc(x)
@@ -178,12 +178,12 @@ class Tree:
             return None
         
         x = x_
-        y = x.left
-        while y.right:
-            y = y.right
-        x.key = y.key
-        if y.left:
-            y = y.left
+        m = x.left
+        while m.right:
+            m = m.right
+        x.key = m.key
+        if m.left:
+            m = m.left
         self.size -= 1
     """
     [수행시간]
@@ -209,3 +209,167 @@ class Tree:
     높이를 가능하면 작게 유지하면 좋으므로,
     강제적으로 유지하게 하는 트리를 binary balanced tree라고 부른다.
     """
+
+class Node:
+    def __init__(self, key):
+        self.key = key
+        self.parent = self.left = self.right = None
+
+    def __str__(self):
+        return str(self.key)
+
+
+class Tree:
+    def __init__(self):
+        self.root = None
+        self.size = 0
+
+    def __len__(self):
+        return self.size
+
+    def preorder(self, v):
+        if v != None:
+            print(v.key, end=" ")
+            self.preorder(v.left)
+            self.preorder(v.right)
+
+    def inorder(self, v):
+        if v != None:
+            self.inorder(v.left)
+            print(v.key, end=" ")
+            self.inorder(v.right)
+
+    def postorder(self, v):
+        if v != None:
+            self.postorder(v.left)
+            self.postorder(v.right)
+            print(v.key, end=" ")
+
+    def find_loc(self, key):
+        if self.size == 0:
+            return None
+        
+        p = None
+        v = self.root
+        while v:
+            if v.key == key:
+                return v
+            else:
+                p = v
+                if v.key < key:
+                    v = v.right
+                else:
+                    v = v.left
+        return p
+       
+    def search(self, key):
+        p = self.find_loc(key)
+        if p and p.key == key:
+            return p
+        else:
+            return None
+
+    def insert(self, key):
+        v = Node(key)
+        if self.size == 0:
+            self.root = v
+        else:
+            p = self.find_loc(key)
+            if p.key == key:
+                return None
+            if p and p.key != key:
+                if p.key < key:
+                    p.right = v
+                else:
+                    p.left = v
+                v.parent = p
+        self.size += 1
+        return v
+
+    def deleteByMerging(self, x):
+        a, b, pt = x.left, x.right, x.parent
+        if a == None:
+            c = b
+        else:
+            c = m = a
+            while m.right:
+                m = m.right
+            m.right = b
+            if b:
+                b.parent = m
+        
+        if self.root == x:
+            if c:
+                c.parent = None
+            self.root = c
+        else:
+            if pt.left == x:
+                pt.left = c
+            else:
+                pt.right = c
+            if c:
+                c.parent = pt
+        self.size -= 1
+
+    def deleteByCopying(self, x):
+        a, b, pt = x.left, x.right, x.parent
+        if a:
+            y = a
+            while y.right:
+                y = y.right
+            x.key = y.key
+            if y.parent == x:
+                x.left = y.left
+            else:
+                y.parent.right = y.left
+        elif b:
+            y = b
+            while y.left:
+                y = y.left
+            x.key = y.key
+            if y.parent == x:
+                x.right = y.right
+            else:
+                y.parent.left = y.right
+        else:
+            if self.root == x:
+                self.root = None
+            else:
+                if pt.left == x:
+                    pt.left = None
+                else:
+                    pt.right = None
+        self.size -= 1
+
+T = Tree()
+
+while True:
+    cmd = input().split()
+    if cmd[0] == 'insert':
+        v = T.insert(int(cmd[1]))
+        print("+ {0} is inserted".format(v.key))
+    elif cmd[0] == 'deleteC':
+        v = T.search(int(cmd[1]))
+        T.deleteByCopying(v)
+        print("- {0} is deleted by copying".format(int(cmd[1])))
+    elif cmd[0] == 'deleteM':
+        v = T.search(int(cmd[1]))
+        T.deleteByMerging(v)
+        print("- {0} is deleted by merging".format(int(cmd[1])))
+    elif cmd[0] == 'search':
+        v = T.search(int(cmd[1]))
+        if v == None: print("* {0} is not found!".format(cmd[1]))
+        else: print(" * {0} is found!".format(cmd[1]))
+    elif cmd[0] == 'preorder':
+        T.preorder(T.root)
+        print()
+    elif cmd[0] == 'postorder':
+        T.postorder(T.root)
+        print()
+    elif cmd[0] == 'inorder':
+        T.inorder(T.root)
+        print()
+    elif cmd[0] == 'exit':
+        break
+    else:
+        print("* not allowed command. enter a proper command!")
