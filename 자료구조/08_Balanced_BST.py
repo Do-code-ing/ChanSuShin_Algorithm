@@ -304,7 +304,7 @@ class BST:
     def height(self, v):
         if v == None:
             return -1
-        return v.height
+        return v.height - 1
     
     def succ(self, v):
         if v == None:
@@ -411,17 +411,17 @@ class AVL(BST):
         z.height -= 1
 
     def rebalance(self, x, y, z):
-        if x.key <= y.key <= z.key:
+        if x.key < y.key < z.key:
             self.rotateRight(z)
             return y
         elif x.key > y.key > z.key:
             self.rotateLeft(z)
             return y
-        elif z.key >= x.key > y.key:
+        elif z.key > x.key > y.key:
             self.rotateLeft(y)
             self.rotateRight(z)
             return x
-        else:
+        elif z.key < x.key < y.key:
             self.rotateRight(y)
             self.rotateLeft(z)
             return x
@@ -430,20 +430,20 @@ class AVL(BST):
         if v.left:
             left = v.left.height
         else:
-            left = -1
+            left = 0
         if v.right:
             right = v.right.height
         else:
-            right = -1
+            right = 0
         return abs(left-right) < 2
     
     def set_height(self, v):
-        left, right = 0, 0
-        if v.left:
-            left = 1 + self.set_height(v.left)
-        if v.right:
-            right = 1 + self.set_height(v.right)
-        v.height = max(left, right)
+        if v == None:
+            return 0
+        
+        left_height = self.set_height(v.left)
+        right_height = self.set_height(v.right)
+        v.height = 1 + max(left_height, right_height)
         return v.height
 
     def insert(self, key):
@@ -453,7 +453,7 @@ class AVL(BST):
         p = v
         while p and self.isbalanced(p):
             p = p.parent
-        if p != None:
+        if p:
             x, y, z = self.find_xyz(p)
             self.rebalance(x, y, z)
             self.set_height(self.root)
