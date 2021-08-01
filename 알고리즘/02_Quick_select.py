@@ -59,6 +59,7 @@ def QuickSelect(L, k):
             B.append(x)
         else:
             M.append(x)
+    
     if len(A) >= k:
         return QuickSelect(A, k)
     elif len(A) + len(M) < k:
