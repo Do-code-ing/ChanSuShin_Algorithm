@@ -67,7 +67,13 @@ def insertion_sort(A, n):
         for j in range(i, m, -1):      # A[i]가 A[m]에 위치해야 하므로, A[m], ..., A[i-1] 원소는 오른쪽으로 한 칸씩 이동함.
             A[j], A[j-1] = A[j-1], A[j]
 
-def find_index(A, i, x):
+def find_index(A, i, x): # 그냥 오른쪽부터 비교하며 탐색하기
+    i -= 1
+    while i >= 0 and A[i] > x:
+        i -= 1
+    return i + 1
+
+def find_index(A, i, x): # 이분 탐색으로 하기
     start = 0
     end = i
     while start < end:
@@ -77,4 +83,4 @@ def find_index(A, i, x):
         else:
             start = mid + 1
     
-    return start
+    return end
