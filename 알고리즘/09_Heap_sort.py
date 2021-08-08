@@ -41,7 +41,7 @@ class Heap:
     """
 
     def heapify_down(self, k, n):
-        while 2*k+1 < n: # 어떤 노드의 자식 노드가 존자한다면,
+        while 2*k+1 < n: # 어떤 노드의 자식 노드가 존재한다면,
             L, R = 2*k+1, 2*k+2
             if L < n and self.A[L] > self.A[k]: # 왼쪽 자식 노드와 비교
                 m = L
