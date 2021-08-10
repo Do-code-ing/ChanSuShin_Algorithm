@@ -25,7 +25,7 @@ def solution():
 	
 	for i in range(1, n):
 		if dp[i] < dp[i-1] + A[i]:
-			dp[i]= dp[i-1] + A[i]
+			dp[i] = dp[i-1] + A[i]
 	
 	return max(dp)
 
