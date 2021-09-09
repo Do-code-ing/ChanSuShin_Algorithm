@@ -161,7 +161,9 @@
             total = O(log n)
 """
 
-# AVL Tree 구현 실패입니당..
+# AVL Tree
+
+
 class Node:
     def __init__(self, key):
         self.key = key
@@ -170,6 +172,7 @@ class Node:
 
     def __str__(self):
         return str(self.key)
+
 
 class BST:
     def __init__(self):
@@ -200,7 +203,7 @@ class BST:
     def find_loc(self, key):
         if self.size == 0:
             return None
-        
+
         p = None
         v = self.root
         while v:
@@ -213,7 +216,7 @@ class BST:
                 else:
                     v = v.left
         return p
-       
+
     def search(self, key):
         p = self.find_loc(key)
         if p and p.key == key:
@@ -235,7 +238,7 @@ class BST:
                 else:
                     p.left = v
                 v.parent = p
-        
+
         self.size += 1
         return v
 
@@ -250,7 +253,7 @@ class BST:
             m.right = b
             if b:
                 b.parent = m
-        
+
         if self.root == x:
             if c:
                 c.parent = None
@@ -262,15 +265,16 @@ class BST:
                 pt.right = c
             if c:
                 c.parent = pt
-        
+
         self.size -= 1
         return pt
 
     def deleteByCopying(self, x):
         if x == None:
-            return 
-        
+            return
+
         a, b, pt = x.left, x.right, x.parent
+        y = None
         if a:
             y = a
             while y.right:
@@ -297,19 +301,18 @@ class BST:
                     pt.left = None
                 else:
                     pt.right = None
-        
         self.size -= 1
-        return pt
+        return y if y else pt
 
     def height(self, v):
         if v == None:
             return -1
         return v.height - 1
-    
+
     def succ(self, v):
         if v == None:
             return None
-        
+
         c = v.right
         while c and c.left:
             c = c.left
@@ -321,11 +324,11 @@ class BST:
             v = p
             p = v.parent
         return p
-    
+
     def pred(self, v):
         if v == None:
             return None
-        
+
         c = v.left
         while c and c.right:
             c = c.right
@@ -338,11 +341,12 @@ class BST:
             p = v.parent
         return p
 
+
 class AVL(BST):
     def __init__(self):
         self.root = None
         self.size = 0
-    
+
     def find_xyz(self, z):
         if z.left and z.right:
             if z.left.height >= z.right.height:
@@ -362,9 +366,9 @@ class AVL(BST):
             x = y.left
         elif y.right:
             x = y.right
-        
+
         return x, y, z
-    
+
     def rotateRight(self, z):
         x = z.left
         if x == None:
@@ -386,7 +390,7 @@ class AVL(BST):
             self.root = x
         x.height += 1
         z.height -= 1
-    
+
     def rotateLeft(self, z):
         x = z.right
         if x == None:
@@ -425,7 +429,7 @@ class AVL(BST):
             self.rotateRight(y)
             self.rotateLeft(z)
             return x
-    
+
     def isbalanced(self, v):
         if v.left:
             left = v.left.height
@@ -436,11 +440,11 @@ class AVL(BST):
         else:
             right = 0
         return abs(left-right) < 2
-    
+
     def set_height(self, v):
         if v == None:
             return 0
-        
+
         left_height = self.set_height(v.left)
         right_height = self.set_height(v.right)
         v.height = 1 + max(left_height, right_height)
@@ -449,7 +453,7 @@ class AVL(BST):
     def insert(self, key):
         v = super(AVL, self).insert(key)
         self.set_height(self.root)
-        
+
         p = v
         while p and self.isbalanced(p):
             p = p.parent
@@ -458,7 +462,7 @@ class AVL(BST):
             self.rebalance(x, y, z)
             self.set_height(self.root)
         return v
-        
+
     def delete(self, u):
         v = self.deleteByCopying(u)
         self.set_height(self.root)
@@ -469,6 +473,7 @@ class AVL(BST):
                 v = self.rebalance(x, y, z)
                 self.set_height(self.root)
             v = v.parent
+
 
 T = AVL()
 while True:
