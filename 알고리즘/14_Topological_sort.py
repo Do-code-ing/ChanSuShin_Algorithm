@@ -1,39 +1,33 @@
-# min-heap을 이용한 코드
 from heapq import heappush, heappop
 
 n = int(input())
 m = int(input())
 edge = [[] for _ in range(n)]
-indegree = [0] * n # 진입차수
+indegree = [0] * n
 
 for _ in range(m):
     a, b = map(int, input().split())
     edge[a].append(b)
     indegree[b] += 1
 
-q = []
+hq = []
+
 for i in range(n):
     if indegree[i] == 0:
-        heappush(q, i)
+        heappush(hq, i)
 
-visited = [False] * n
-result = [] # 정답을 담을 배열
-while q:
-    x = heappop(q)
-    result.append(x)
-    visited[x] = True
-
+while hq:
+    x = heappop(hq)
+    print(x, end=" ")
     for y in edge[x]:
-        if visited[y]:
-            continue
-    
         indegree[y] -= 1
         if indegree[y] == 0:
-            heappush(q, y)
+            heappush(hq, y)
 
-print(" ".join(map(str, result)))
+# min-heap 을 이용해, 주의 사항에 따라 순서를 지키며 위상 정렬을 수행했습니다.
+# 수행시간은 O(m) 입니다.
 
-## 이하 post의 반대 순서로 정답을 도출하는 코드
+# 이하 post의 반대 순서로 정답을 도출하는 코드
 # import sys
 # sys.setrecursionlimit(5000)
 
